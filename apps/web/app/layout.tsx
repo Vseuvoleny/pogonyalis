@@ -1,15 +1,22 @@
-import type { Metadata } from 'next';
-import './globals.css';
+import type { Metadata } from "next";
+import "./globals.css";
+import { QueryProvider } from "@/app/QueryProvider";
 
 export const metadata: Metadata = {
-  title: 'Pogonyalis',
-  description: 'Next.js app for Pogonyalis',
+  title: "Pogonyalis",
+  description: "Next.js app for Pogonyalis",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   );
 }
