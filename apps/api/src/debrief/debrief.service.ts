@@ -1,26 +1,52 @@
-import { Injectable } from '@nestjs/common';
-import { CreateDebriefDto } from './dto/create-debrief.dto';
-import { UpdateDebriefDto } from './dto/update-debrief.dto';
+import { Injectable } from "@nestjs/common";
+import { CreateDebriefDto } from "./dto/create-debrief.dto";
+import { UpdateDebriefDto } from "./dto/update-debrief.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Debrief } from "./entities/debrief.entity";
 
 @Injectable()
 export class DebriefService {
+  constructor(
+    @InjectRepository(Debrief) private debriefRepository: Repository<Debrief>,
+  ) {}
+
   create(createDebriefDto: CreateDebriefDto) {
-    return 'This action adds a new debrief';
+    const debrief = this.debriefRepository.save(createDebriefDto);
+    return debrief;
   }
 
   findAll() {
-    return `This action returns all debrief`;
+    return this.debriefRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} debrief`;
+  async findOne(id: string) {
+    const currentDebrief = await this.debriefRepository.findOneBy({ id });
+    if (!currentDebrief) {
+      throw new Error(`Не найдена сущность с ID:${id}`);
+    }
+
+    return currentDebrief;
   }
 
-  update(id: number, updateDebriefDto: UpdateDebriefDto) {
-    return `This action updates a #${id} debrief`;
+  async update(id: string, updateDebriefDto: UpdateDebriefDto) {
+    const currentDebrief = await this.debriefRepository.findOneBy({ id });
+    if (!currentDebrief) {
+      throw new Error(`Не найдена сущность с ID:${id}`);
+    }
+    const newBody: CreateDebriefDto = {
+      ...currentDebrief,
+      ...updateDebriefDto,
+    };
+    await this.debriefRepository.update({ id }, newBody);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} debrief`;
+  remove(id: string) {
+    const currentDebrief = this.debriefRepository.findOneBy({ id });
+    if (!currentDebrief) {
+      throw new Error(`Не найдена сущность с ID:${id}`);
+    }
+    const result = this.debriefRepository.delete({ id });
+    return result;
   }
 }
