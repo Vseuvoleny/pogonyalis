@@ -3,8 +3,6 @@
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import styles from "./styles.module.scss";
-import { Header } from "@/widgets/header";
-import { Footer } from "@/widgets/footer";
 
 type DebriefFormValues = {
   eventDate: string;
@@ -41,7 +39,6 @@ export function NewDebriefPage() {
 
   return (
     <div className="page-shell">
-      <Header />
       <main className={styles.page}>
         <section className={styles.heading}>
           <Link className={styles.backLink} href="/debriefings">
@@ -156,8 +153,6 @@ export function NewDebriefPage() {
           </div>
         </form>
       </main>
-
-      <Footer />
     </div>
   );
 }
