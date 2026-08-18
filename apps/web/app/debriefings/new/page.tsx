@@ -1,4 +1,4 @@
-import { NewDebriefPage } from "@/fsd/pages/new-debrief";
+import { NewDebriefPage } from "@/pages/new-debrief";
 
 export default function Page() {
   return <NewDebriefPage />;

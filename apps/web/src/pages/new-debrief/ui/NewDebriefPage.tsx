@@ -2,17 +2,16 @@
 
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { Footer } from "@/fsd/widgets/footer";
-import { Header } from "@/fsd/widgets/header";
 import styles from "./styles.module.scss";
+import { Header } from "@/widgets/header";
+import { Footer } from "@/widgets/footer";
 
 type DebriefFormValues = {
   eventDate: string;
-  eventType: "training" | "race" | "regatta" | "test";
+  eventType: "training" | "race" | "training_race";
   boatClass: string;
   location: string;
   wind: string;
-  windSpeedUnit: "knots" | "metersPerSecond";
   current: string;
   competitors: string;
   comment: string;
@@ -27,18 +26,22 @@ export function NewDebriefPage() {
   } = useForm<DebriefFormValues>({
     defaultValues: {
       eventType: "training",
-      windSpeedUnit: "knots",
     },
   });
 
   const onSubmit = (data: DebriefFormValues) => {
-    localStorage.setItem("debriefData", JSON.stringify(data));
+    fetch("http://localhost:3333/debrief", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
   };
 
   return (
     <div className="page-shell">
       <Header />
-
       <main className={styles.page}>
         <section className={styles.heading}>
           <Link className={styles.backLink} href="/debriefings">
@@ -70,9 +73,8 @@ export function NewDebriefPage() {
               <span>Тип события</span>
               <select {...register("eventType")}>
                 <option value="training">Тренировка</option>
+                <option value="training_race">Тренировочная гонка</option>
                 <option value="race">Гонка</option>
-                <option value="regatta">Регата</option>
-                <option value="test">Тестовая сессия</option>
               </select>
             </label>
 
@@ -107,15 +109,6 @@ export function NewDebriefPage() {
               />
               {errors.wind ? <small>{errors.wind.message}</small> : null}
             </label>
-
-            <label className={styles.field}>
-              <span>Единицы ветра</span>
-              <select {...register("windSpeedUnit")}>
-                <option value="knots">Узлы</option>
-                <option value="metersPerSecond">м/с</option>
-              </select>
-            </label>
-
             <label className={styles.field}>
               <span>Условия течения</span>
               <input

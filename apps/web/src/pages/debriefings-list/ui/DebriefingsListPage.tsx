@@ -1,49 +1,37 @@
 "use client";
 
-import Link from "next/link";
-import { Footer } from "@/fsd/widgets/footer";
-import { Header } from "@/fsd/widgets/header";
 import styles from "./styles.module.scss";
 import { useEffect, useState } from "react";
-
-const debriefings = [
-  {
-    id: "1",
-    date: "2026-07-12",
-    type: "Тренировка",
-    boatClass: "J/70",
-    wind: "8-12 узлов, правый заход к концу сессии",
-    current: "Слабое течение вдоль линии старта",
-    summary:
-      "Хорошие старты с пина, нужно точнее держать layline на верхнем знаке.",
-  },
-  {
-    id: "2",
-    date: "2026-07-06",
-    type: "Гонка",
-    boatClass: "SB20",
-    wind: "14-18 узлов, порывисто",
-    current: "Заметный снос на лавировке",
-    summary:
-      "Потеряли темп после второго поворота, но хорошо отыграли на фордевинде.",
-  },
-];
+import { Link } from "@mui/material";
+import { Header } from "@/widgets/header";
+import { Footer } from "@/widgets/footer";
 
 export function DebriefingsListPage() {
-  const [debrief, setDebrief] = useState(debriefings);
-
+  const [debrief, setDebrief] = useState([]);
+  console.log(process.env);
   useEffect(() => {
-    const mergeLocalStorageDebriefings = () => {
-      const localStorageDebriefings = localStorage.getItem("debriefData");
-      if (localStorageDebriefings) {
-        const parsedDebriefings = JSON.parse(localStorageDebriefings);
-        console.log(parsedDebriefings);
-
-        const mergedDebriefings = [parsedDebriefings, ...debriefings];
-        setDebrief(mergedDebriefings);
-      }
-    };
-    mergeLocalStorageDebriefings();
+    fetch("http://localhost:3333/debrief")
+      .then((res) => {
+        const result = res.json();
+        return result;
+      })
+      .then((res) => {
+        const mapped = res.data.map((e) => {
+          return {
+            id: e.id,
+            date: e.eventDate,
+            type: e.eventType,
+            boatClass: e.boatClass,
+            wind: e.wind,
+            current: e.current,
+            summary: e.comment,
+          };
+        });
+        setDebrief(mapped);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   return (
@@ -84,6 +72,9 @@ export function DebriefingsListPage() {
               </dl>
 
               <p className={styles.summary}>{debriefing.summary}</p>
+              <Link href={`/debriefings/${debriefing.id}`} underline="none">
+                К записи
+              </Link>
             </article>
           ))}
         </section>

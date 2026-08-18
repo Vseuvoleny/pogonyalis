@@ -1,6 +1,6 @@
+import { Footer } from "@/widgets/footer";
+import { Header } from "@/widgets/header";
 import { sharedText } from "@pogonyalis/ui";
-import { Footer } from "@/fsd/widgets/footer";
-import { Header } from "@/fsd/widgets/header";
 
 export function MainPage() {
   return (
