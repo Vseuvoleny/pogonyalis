@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import styles from "./styles.module.scss";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
@@ -8,44 +8,29 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 
-import { Grid, Link, Typography } from "@mui/material";
+import { Grid, Link, Skeleton, Typography } from "@mui/material";
 import { Training_Name } from "@/shared";
-import { Description } from "@/entities";
+import { debriefQuery, Description } from "@/entities";
+import { useQuery } from "@tanstack/react-query";
 
 type DebriefProps = {
   id: string;
 };
 
-type DebriefDto = {
-  id: string;
-  eventDate: string;
-  eventType: string;
-  boatClass: string;
-  location: string;
-  wind: string;
-  current: string;
-  competitors: string;
-  comment: string;
-  nextSteps: string;
-};
-
 export const Debrief: FC<DebriefProps> = ({ id }: { id: string }) => {
-  const [debrief, setDebrief] = useState<DebriefDto | null>(null);
-  useEffect(() => {
-    fetch(`http://localhost:3333/debrief/${id}`)
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => {
-        setDebrief(res.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+  const { data: debrief, isPending, isError } = useQuery(debriefQuery(id));
 
-  if (!debrief) {
-    return null;
+  if (isPending) {
+    return (
+      <Container>
+        <Box sx={{ p: 2 }}>
+          <Skeleton variant="rectangular" width={650} height={315} />
+        </Box>
+      </Container>
+    );
+  }
+  if (isError) {
+    return <div>Произошла ошибка</div>;
   }
 
   return (

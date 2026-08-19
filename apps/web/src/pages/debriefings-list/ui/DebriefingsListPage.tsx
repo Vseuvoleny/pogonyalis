@@ -1,78 +1,99 @@
 "use client";
 
 import styles from "./styles.module.scss";
-import { useEffect, useState } from "react";
-import { Link } from "@mui/material";
+import { Box, Button, Container, Grid, Link, Skeleton } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import {
+  allDebriefQuery,
+  Description,
+  useDeleteDebriefMutation,
+} from "@/entities";
+import { Training_Name } from "@/shared";
 
 export function DebriefingsListPage() {
-  const [debrief, setDebrief] = useState([]);
-  console.log(process.env);
-  useEffect(() => {
-    fetch("http://localhost:3333/debrief")
-      .then((res) => {
-        const result = res.json();
-        return result;
-      })
-      .then((res) => {
-        const mapped = res.data.map((e) => {
-          return {
-            id: e.id,
-            date: e.eventDate,
-            type: e.eventType,
-            boatClass: e.boatClass,
-            wind: e.wind,
-            current: e.current,
-            summary: e.comment,
-          };
-        });
-        setDebrief(mapped);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+  const { data, isPending, isError } = useQuery(allDebriefQuery());
+  const mutation = useDeleteDebriefMutation();
+
+  if (isPending) {
+    return (
+      <Container>
+        <Box sx={{ p: 2 }}>
+          <Skeleton variant="rectangular" width={650} height={315} />
+        </Box>
+      </Container>
+    );
+  }
+  if (isError) {
+    return <div>Произошла ошибка</div>;
+  }
 
   return (
-    <div className="page-shell">
-      <section className={styles.heading}>
-        <div>
-          <p className={styles.eyebrow}>Журнал</p>
-          <h1 className={styles.title}>Дебрифинги</h1>
-        </div>
-        <Link className={styles.createLink} href="/debriefings/new">
-          Новая запись
-        </Link>
-      </section>
+    <Box sx={{ mt: 4 }}>
+      <Container className="page-shell">
+        <section className={styles.heading}>
+          <div>
+            <p className={styles.eyebrow}>Журнал</p>
+            <h1 className={styles.title}>Дебрифинги</h1>
+          </div>
+          <Button href="/debriefings/new" variant="outlined">
+            Новая запись
+          </Button>
+        </section>
 
-      <section className={styles.list} aria-label="Список дебрифингов">
-        {debrief.map((debriefing) => (
-          <article className={styles.card} key={debriefing.id}>
-            <div className={styles.cardHeader}>
-              <div>
-                <p className={styles.date}>{debriefing.date}</p>
-                <h2>{debriefing.type}</h2>
+        <section className={styles.list} aria-label="Список дебрифингов">
+          {data.map((debriefing) => (
+            <article className={styles.card} key={debriefing.id}>
+              <div className={styles.cardHeader}>
+                <div>
+                  <p className={styles.date}>{debriefing.eventDate}</p>
+                  <h2>
+                    {
+                      Training_Name[
+                        debriefing.eventType as keyof typeof Training_Name
+                      ]
+                    }
+                  </h2>
+                </div>
+                <span className={styles.boatClass}>{debriefing.boatClass}</span>
               </div>
-              <span className={styles.boatClass}>{debriefing.boatClass}</span>
-            </div>
-
-            <dl className={styles.conditions}>
-              <div>
-                <dt>Ветер</dt>
-                <dd>{debriefing.wind}</dd>
-              </div>
-              <div>
-                <dt>Течение</dt>
-                <dd>{debriefing.current}</dd>
-              </div>
-            </dl>
-
-            <p className={styles.summary}>{debriefing.summary}</p>
-            <Link href={`/debriefings/${debriefing.id}`} underline="none">
-              К записи
-            </Link>
-          </article>
-        ))}
-      </section>
-    </div>
+              <dl className={styles.conditions}>
+                <Grid size={2}>
+                  <Description desc={debriefing.wind} title="Ветер" />
+                </Grid>
+                <Grid size={2}>
+                  <Description desc={debriefing.current} title="Течение" />
+                </Grid>
+                <Grid size={2}>
+                  <Description desc={debriefing.location} title="Локация" />
+                </Grid>
+              </dl>
+              <Box sx={{ mt: 1 }}>
+                <Button size="small">
+                  <Link href={`/debriefings/${debriefing.id}`} underline="none">
+                    К записи
+                  </Link>
+                </Button>
+                <Button
+                  size="small"
+                  onClick={() => {
+                    console.log("форма редактирования");
+                  }}
+                >
+                  Редактировать
+                </Button>
+                <Button
+                  size="small"
+                  onClick={() => {
+                    mutation.mutate(debriefing.id);
+                  }}
+                >
+                  Удалить
+                </Button>
+              </Box>
+            </article>
+          ))}
+        </section>
+      </Container>
+    </Box>
   );
 }

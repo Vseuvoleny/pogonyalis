@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import styles from "./styles.module.scss";
+import { useCreateDebriefMutation } from "@/entities";
+import { Button } from "@mui/material";
 
 type DebriefFormValues = {
   eventDate: string;
@@ -17,6 +19,7 @@ type DebriefFormValues = {
 };
 
 export function NewDebriefPage() {
+  const mutation = useCreateDebriefMutation();
   const {
     handleSubmit,
     register,
@@ -28,13 +31,7 @@ export function NewDebriefPage() {
   });
 
   const onSubmit = (data: DebriefFormValues) => {
-    fetch("http://localhost:3333/debrief", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    mutation.mutate(data);
   };
 
   return (
@@ -146,10 +143,25 @@ export function NewDebriefPage() {
           </label>
 
           <div className={styles.actions}>
-            <button disabled={isSubmitting} type="submit">
+            <Button
+              variant="contained"
+              size="medium"
+              color="primary"
+              disabled={mutation.isPending}
+              type="submit"
+              loading={mutation.isPending}
+              loadingPosition="end"
+            >
               Сохранить запись
-            </button>
-            <Link href="/debriefings">Отмена</Link>
+            </Button>
+            <Button
+              href="/debriefings"
+              variant="contained"
+              size="medium"
+              color="secondary"
+            >
+              Отмена
+            </Button>
           </div>
         </form>
       </main>
