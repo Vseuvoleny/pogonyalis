@@ -1,0 +1,84 @@
+import { DebriefDto, Description, useDeleteDebriefMutation } from "@/entities";
+import React, { FC } from "react";
+import styles from "./styles.module.scss";
+import { Training_Name } from "@/shared";
+import { Box, Button, Grid, Link } from "@mui/material";
+import { useDebriefModal } from "../model";
+
+type Props = {
+  debriefs: DebriefDto[];
+};
+
+export const DebriefList: FC<Props> = ({ debriefs }) => {
+  const mutation = useDeleteDebriefMutation();
+  const openModal = useDebriefModal((state) => state.openModal);
+  const setType = useDebriefModal((state) => state.setType);
+
+  const handlePatchClick = (id: string) => {
+    openModal();
+    setType("edit");
+    console.log("форма редактирования", id);
+  };
+
+  const handleDeleteClick = (id: string) => {
+    openModal();
+    setType("delete");
+    console.log("форма удаления", id);
+  };
+
+  return (
+    <>
+      {debriefs.map((debriefing) => (
+        <article className={styles.card} key={debriefing.id}>
+          <div className={styles.cardHeader}>
+            <div>
+              <p className={styles.date}>{debriefing.eventDate}</p>
+              <h2>
+                {
+                  Training_Name[
+                    debriefing.eventType as keyof typeof Training_Name
+                  ]
+                }
+              </h2>
+            </div>
+            <span className={styles.boatClass}>{debriefing.boatClass}</span>
+          </div>
+          <dl className={styles.conditions}>
+            <Grid size={2}>
+              <Description desc={debriefing.wind} title="Ветер" />
+            </Grid>
+            <Grid size={2}>
+              <Description desc={debriefing.current} title="Течение" />
+            </Grid>
+            <Grid size={2}>
+              <Description desc={debriefing.location} title="Локация" />
+            </Grid>
+          </dl>
+          <Box sx={{ mt: 1 }}>
+            <Button size="small">
+              <Link href={`/debriefings/${debriefing.id}`} underline="none">
+                К записи
+              </Link>
+            </Button>
+            <Button
+              size="small"
+              onClick={() => {
+                handlePatchClick(debriefing.id);
+              }}
+            >
+              Редактировать
+            </Button>
+            <Button
+              size="small"
+              onClick={() => {
+                handleDeleteClick(debriefing.id);
+              }}
+            >
+              Удалить
+            </Button>
+          </Box>
+        </article>
+      ))}
+    </>
+  );
+};

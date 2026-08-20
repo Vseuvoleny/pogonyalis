@@ -1,5 +1,4 @@
 import {
-  mutationOptions,
   queryOptions,
   useMutation,
   useQueryClient,
@@ -54,16 +53,16 @@ export const useDeleteDebriefMutation = () => {
 };
 
 export const useUpdateDebriefMutation = () => {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({ id, body }: { id: string; body: DebriefBody }) =>
       patchDebrief(id, body),
 
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["debriefs"],
-      });
-    },
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries({
+    //     queryKey: ["debriefs"],
+    //   });
+    // },
   });
 };
