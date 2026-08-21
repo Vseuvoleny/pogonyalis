@@ -4,26 +4,29 @@ import styles from "./styles.module.scss";
 import { Training_Name } from "@/shared";
 import { Box, Button, Grid, Link } from "@mui/material";
 import { useDebriefModal } from "../model";
+import { useDebriefData } from "@/feautures/model";
 
 type Props = {
   debriefs: DebriefDto[];
 };
 
 export const DebriefList: FC<Props> = ({ debriefs }) => {
-  const mutation = useDeleteDebriefMutation();
   const openModal = useDebriefModal((state) => state.openModal);
   const setType = useDebriefModal((state) => state.setType);
+  const setDebrief = useDebriefData((state) => state.setDebrief);
 
-  const handlePatchClick = (id: string) => {
+  const handlePatchClick = (debrief: DebriefDto) => {
     openModal();
     setType("edit");
-    console.log("форма редактирования", id);
+    setDebrief(debrief);
+    console.log("форма редактирования", debrief.id);
   };
 
-  const handleDeleteClick = (id: string) => {
+  const handleDeleteClick = (debrief: DebriefDto) => {
     openModal();
     setType("delete");
-    console.log("форма удаления", id);
+    setDebrief(debrief);
+    console.log("форма удаления", debrief.id);
   };
 
   return (
@@ -63,7 +66,7 @@ export const DebriefList: FC<Props> = ({ debriefs }) => {
             <Button
               size="small"
               onClick={() => {
-                handlePatchClick(debriefing.id);
+                handlePatchClick(debriefing);
               }}
             >
               Редактировать
@@ -71,7 +74,7 @@ export const DebriefList: FC<Props> = ({ debriefs }) => {
             <Button
               size="small"
               onClick={() => {
-                handleDeleteClick(debriefing.id);
+                handleDeleteClick(debriefing);
               }}
             >
               Удалить

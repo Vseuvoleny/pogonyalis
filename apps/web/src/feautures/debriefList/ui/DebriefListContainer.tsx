@@ -40,6 +40,7 @@ export const DebriefListContainer: FC = () => {
             ? "Редактирование записи"
             : "Вы действительно хотите удалить запись?"
         }
+        $width={type === "edit" ? "800px" : undefined}
         renderForm={() => {
           const FormComponent =
             FormDictionary[type as keyof typeof FormDictionary];

@@ -7,6 +7,7 @@ type Props = {
   title?: string;
   description?: string;
   renderForm?: () => ReactNode;
+  $width?: string;
 };
 
 export const FormModal: FC<Props> = ({
@@ -15,6 +16,7 @@ export const FormModal: FC<Props> = ({
   renderForm,
   title,
   description,
+  $width = "400",
 }) => {
   return (
     <Modal
@@ -30,7 +32,7 @@ export const FormModal: FC<Props> = ({
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: "fit-content",
+          width: $width,
           bgcolor: "background.paper",
           borderRadius: "8px",
           boxShadow: 24,
