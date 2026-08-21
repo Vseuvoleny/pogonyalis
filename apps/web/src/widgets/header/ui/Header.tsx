@@ -10,6 +10,7 @@ export function Header() {
       <nav className={styles.nav} aria-label="Основная навигация">
         <Link href="/debriefings">Дебрифинги</Link>
         <Link href="/debriefings/new">Новая запись</Link>
+        <Link href="/debriefings/profile"> Личный кабинет</Link>
       </nav>
     </header>
   );
