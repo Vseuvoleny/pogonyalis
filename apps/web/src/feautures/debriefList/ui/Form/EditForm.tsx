@@ -1,4 +1,14 @@
-import { Box, Button, Grid } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  Grid,
+  Input,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 import React, { FC } from "react";
 import { useForm } from "react-hook-form";
 import styles from "./styles.module.scss";
@@ -17,7 +27,6 @@ export const EditForm: FC<Props> = ({ cancel }) => {
   const clearDebrief = useDebriefData((state) => state.clearDebrief);
   const closeModal = useDebriefModal((state) => state.closeModal);
 
-  console.log({ debrief });
   const mutation = useUpdateDebriefMutation();
   const queryClient = useQueryClient();
 
@@ -60,7 +69,7 @@ export const EditForm: FC<Props> = ({ cancel }) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container rowSpacing={2} columns={8}>
           <Grid container spacing={2} columns={8} size={8}>
-            <Grid size={4}>
+            <Grid size={4} sx={{ alignItems: "center" }}>
               <label className={styles.field}>
                 <span>Дата события</span>
                 <input
@@ -75,21 +84,21 @@ export const EditForm: FC<Props> = ({ cancel }) => {
               </label>
             </Grid>
             <Grid size={4}>
-              <label className={styles.field}>
-                <span>Тип события</span>
-                <select {...register("eventType")}>
-                  <option value="training">Тренировка</option>
-                  <option value="training_race">Тренировочная гонка</option>
-                  <option value="race">Гонка</option>
-                </select>
-              </label>
+              <FormControl className={styles.field} fullWidth size="small">
+                <InputLabel>Тип события</InputLabel>
+                <Select {...register("eventType")}>
+                  <MenuItem value="training">Тренировка</MenuItem>
+                  <MenuItem value="training_race">Тренировочная гонка</MenuItem>
+                  <MenuItem value="race">Гонка</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
           </Grid>
           <Grid container spacing={2} columns={8} size={8}>
             <Grid size={4}>
               <label className={styles.field}>
-                <span>Класс яхты</span>
-                <input
+                <TextField
+                  label="Класс яхты"
                   placeholder="Например, J/70"
                   {...register("boatClass", {
                     required: "Укажи класс яхты",
@@ -102,8 +111,8 @@ export const EditForm: FC<Props> = ({ cancel }) => {
             </Grid>
             <Grid size={4}>
               <label className={styles.field}>
-                <span>Акватория</span>
-                <input
+                <TextField
+                  label="Акватория"
                   placeholder="Место тренировки или гонки"
                   {...register("location")}
                 />
@@ -113,8 +122,8 @@ export const EditForm: FC<Props> = ({ cancel }) => {
           <Grid container spacing={2} columns={8} size={8}>
             <Grid size={4}>
               <label className={styles.field}>
-                <span>Ветровые условия</span>
-                <input
+                <TextField
+                  label="Ветровые условия"
                   placeholder="Направление, сила, порывы"
                   {...register("wind", {
                     required: "Опиши ветровые условия",
@@ -125,8 +134,8 @@ export const EditForm: FC<Props> = ({ cancel }) => {
             </Grid>
             <Grid size={4}>
               <label className={styles.field}>
-                <span>Условия течения</span>
-                <input
+                <TextField
+                  label="Условия течения"
                   placeholder="Направление, сила, зоны влияния"
                   {...register("current")}
                 />
@@ -137,8 +146,9 @@ export const EditForm: FC<Props> = ({ cancel }) => {
           <Grid container rowSpacing={2} columns={8} size={8}>
             <Grid size={8}>
               <label className={styles.field}>
-                <span>Соперники</span>
-                <textarea
+                <TextField
+                  label="Соперники"
+                  multiline
                   placeholder="Кто был на воде, сильные и слабые стороны соперников"
                   rows={4}
                   {...register("competitors")}
@@ -147,8 +157,9 @@ export const EditForm: FC<Props> = ({ cancel }) => {
             </Grid>
             <Grid size={8}>
               <label className={styles.field}>
-                <span>Комментарий о событии</span>
-                <textarea
+                <TextField
+                  label="Комментарий о событии"
+                  multiline
                   placeholder="Что происходило, какие решения сработали, что стоит повторить"
                   rows={6}
                   {...register("comment", {
@@ -162,8 +173,9 @@ export const EditForm: FC<Props> = ({ cancel }) => {
             </Grid>
             <Grid size={8}>
               <label className={styles.field}>
-                <span>Выводы на следующий выход</span>
-                <textarea
+                <TextField
+                  label="Выводы на следующий выход"
+                  multiline
                   placeholder="1-3 конкретных действия для следующей тренировки"
                   rows={4}
                   {...register("nextSteps")}
