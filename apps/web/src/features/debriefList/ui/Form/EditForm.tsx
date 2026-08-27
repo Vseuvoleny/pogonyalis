@@ -2,19 +2,26 @@ import {
   Box,
   Button,
   FormControl,
+  FormControlLabel,
   Grid,
   InputLabel,
   MenuItem,
+  Radio,
+  RadioGroup,
   Select,
   TextField,
 } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import dayjs from "dayjs";
 import React, { FC } from "react";
-import { useForm } from "react-hook-form";
 import styles from "./styles.module.scss";
 import { useDebriefData } from "@/features/model";
-import { DebriefBody, DebriefDto, useUpdateDebriefMutation } from "@/entities";
+import { DebriefDto, useUpdateDebriefMutation } from "@/entities";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDebriefModal } from "../../model";
+import { debriefFormSchema, DebriefFormValues } from "../../model";
 
 type Props = {
   cancel: () => void;
@@ -32,14 +39,19 @@ export const EditForm: FC<Props> = ({ cancel }) => {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
-  } = useForm({
+  } = useForm<DebriefFormValues>({
+    resolver: zodResolver(debriefFormSchema),
     defaultValues: {
       eventDate: debrief.eventDate,
       eventType: debrief.eventType,
       boatClass: debrief.boatClass,
       location: debrief.location,
-      wind: debrief.wind,
+      windFrom: debrief.windFrom,
+      windTo: debrief.windTo,
+      windUnit: debrief.windUnit,
+      windGusts: debrief.windGusts,
       current: debrief.current,
       competitors: debrief.competitors,
       comment: debrief.comment,
@@ -47,7 +59,7 @@ export const EditForm: FC<Props> = ({ cancel }) => {
     },
   });
 
-  const onSubmit = (data: DebriefBody) => {
+  const onSubmit = (data: DebriefFormValues) => {
     console.log("Submitted data:", data);
     mutation.mutate(
       { body: data, id: debriefId },
@@ -69,18 +81,27 @@ export const EditForm: FC<Props> = ({ cancel }) => {
         <Grid container rowSpacing={2} columns={8}>
           <Grid container spacing={2} columns={8} size={8}>
             <Grid size={4} sx={{ alignItems: "center" }}>
-              <label className={styles.field}>
-                <span>Дата события</span>
-                <input
-                  type="date"
-                  {...register("eventDate", {
-                    required: "Укажи дату события",
-                  })}
-                />
-                {errors.eventDate ? (
-                  <small>{errors.eventDate.message}</small>
-                ) : null}
-              </label>
+              <Controller
+                name="eventDate"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <DatePicker
+                    label="Дата события"
+                    value={field.value ? dayjs(field.value) : null}
+                    onChange={(date) =>
+                      field.onChange(date?.format("YYYY-MM-DD") ?? "")
+                    }
+                    slotProps={{
+                      textField: {
+                        size: "small",
+                        fullWidth: true,
+                        error: !!fieldState.error,
+                        helperText: fieldState.error?.message,
+                      },
+                    }}
+                  />
+                )}
+              />
             </Grid>
             <Grid size={4}>
               <FormControl className={styles.field} fullWidth size="small">
@@ -99,9 +120,7 @@ export const EditForm: FC<Props> = ({ cancel }) => {
                 <TextField
                   label="Класс яхты"
                   placeholder="Например, J/70"
-                  {...register("boatClass", {
-                    required: "Укажи класс яхты",
-                  })}
+                  {...register("boatClass")}
                 />
                 {errors.boatClass ? (
                   <small>{errors.boatClass.message}</small>
@@ -121,14 +140,51 @@ export const EditForm: FC<Props> = ({ cancel }) => {
           <Grid container spacing={2} columns={8} size={8}>
             <Grid size={4}>
               <label className={styles.field}>
-                <TextField
-                  label="Ветровые условия"
-                  placeholder="Направление, сила, порывы"
-                  {...register("wind", {
-                    required: "Опиши ветровые условия",
-                  })}
+                <span>Ветер (м/с)</span>
+                <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                  <TextField
+                    label="От"
+                    type="number"
+                    size="small"
+                    sx={{ flex: 1 }}
+                    {...register("windFrom", { valueAsNumber: true })}
+                  />
+                  <TextField
+                    label="До"
+                    type="number"
+                    size="small"
+                    sx={{ flex: 1 }}
+                    error={!!errors.windTo}
+                    helperText={errors.windTo?.message}
+                    {...register("windTo", { valueAsNumber: true })}
+                  />
+                </Box>
+                <Controller
+                  name="windUnit"
+                  control={control}
+                  render={({ field }) => (
+                    <RadioGroup row {...field}>
+                      <FormControlLabel
+                        value="ms"
+                        control={<Radio size="small" />}
+                        label="м/с"
+                      />
+                      <FormControlLabel
+                        value="knots"
+                        control={<Radio size="small" />}
+                        label="узлы"
+                      />
+                    </RadioGroup>
+                  )}
                 />
-                {errors.wind ? <small>{errors.wind.message}</small> : null}
+                <TextField
+                  label="Порывы"
+                  type="number"
+                  size="small"
+                  error={!!errors.windGusts}
+                  helperText={errors.windGusts?.message}
+                  {...register("windGusts", { valueAsNumber: true })}
+                />
               </label>
             </Grid>
             <Grid size={4}>
@@ -161,9 +217,7 @@ export const EditForm: FC<Props> = ({ cancel }) => {
                   multiline
                   placeholder="Что происходило, какие решения сработали, что стоит повторить"
                   rows={6}
-                  {...register("comment", {
-                    required: "Добавь комментарий о событии",
-                  })}
+                  {...register("comment")}
                 />
                 {errors.comment ? (
                   <small>{errors.comment.message}</small>

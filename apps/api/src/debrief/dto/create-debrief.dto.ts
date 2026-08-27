@@ -1,6 +1,8 @@
 import {
   IsDate,
   IsEnum,
+  IsIn,
+  IsInt,
   IsOptional,
   IsString,
 } from "class-validator";
@@ -21,9 +23,21 @@ export class CreateDebriefDto {
   @IsOptional()
   location!: string;
 
-  @IsString()
+  @IsInt()
   @IsOptional()
-  wind!: string;
+  windFrom!: number | null;
+
+  @IsInt()
+  @IsOptional()
+  windTo!: number | null;
+
+  @IsIn(["ms", "knots"])
+  @IsOptional()
+  windUnit!: "ms" | "knots" | null;
+
+  @IsInt()
+  @IsOptional()
+  windGusts!: number | null;
 
   @IsString()
   @IsOptional()

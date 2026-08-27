@@ -10,7 +10,7 @@ import CardContent from "@mui/material/CardContent";
 
 import { Grid, Link, Skeleton, Typography } from "@mui/material";
 import { TrainingName } from "@/shared";
-import { debriefQuery, Description } from "@/entities";
+import { debriefQuery, Description, formatWind } from "@/entities";
 import { useQuery } from "@tanstack/react-query";
 
 type DebriefProps = {
@@ -59,7 +59,7 @@ export const Debrief: FC<DebriefProps> = ({ id }: { id: string }) => {
             </div>
 
             <dl className={styles.conditions}>
-              <Description desc={debrief.wind} title="Ветер" />
+              <Description desc={formatWind(debrief)} title="Ветер" />
               <Description desc={debrief.location} title="Локация" />
               <Description desc={debrief.current} title="Течение" />
               <Description desc={debrief.competitors} title="Соперники" />
@@ -69,7 +69,7 @@ export const Debrief: FC<DebriefProps> = ({ id }: { id: string }) => {
                 <Grid size={4}>
                   <Box>
                     <Typography variant="h6">Комментарий</Typography>
-                    <Typography variant="body2" color="textSecondary">
+                    <Typography variant="body2" color="textSecondary" sx={{ whiteSpace: "pre-line" }}>
                       {debrief.comment}
                     </Typography>
                   </Box>
@@ -77,7 +77,7 @@ export const Debrief: FC<DebriefProps> = ({ id }: { id: string }) => {
                 <Grid size={4}>
                   <div>
                     <Typography variant="h6">Пожелания</Typography>
-                    <Typography variant="body2" color="textSecondary">
+                    <Typography variant="body2" color="textSecondary" sx={{ whiteSpace: "pre-line" }}>
                       {debrief.nextSteps}
                     </Typography>
                   </div>

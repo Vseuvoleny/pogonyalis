@@ -23,8 +23,17 @@ export class Debrief {
   @Column({ nullable: true })
   location!: string;
 
-  @Column({ nullable: true })
-  wind!: string;
+  @Column({ type: "int", nullable: true })
+  windFrom!: number | null;
+
+  @Column({ type: "int", nullable: true })
+  windTo!: number | null;
+
+  @Column({ type: "varchar", length: 4, nullable: true })
+  windUnit!: "ms" | "knots" | null;
+
+  @Column({ type: "int", nullable: true })
+  windGusts!: number | null;
 
   @Column({ nullable: true })
   current!: string;
