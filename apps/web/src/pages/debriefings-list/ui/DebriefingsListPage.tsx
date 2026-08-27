@@ -7,7 +7,7 @@ import { DebriefListContainer } from "@/features/debriefList";
 export function DebriefingsListPage() {
   return (
     <Box sx={{ mt: 4 }}>
-      <Container className="page-shell">
+      <Container>
         <section className={styles.heading}>
           <div>
             <p className={styles.eyebrow}>Журнал</p>
