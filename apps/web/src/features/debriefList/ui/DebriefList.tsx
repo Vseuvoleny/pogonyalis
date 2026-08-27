@@ -1,10 +1,10 @@
-import { DebriefDto, Description, useDeleteDebriefMutation } from "@/entities";
+import { DebriefDto, Description } from "@/entities";
 import React, { FC } from "react";
 import styles from "./styles.module.scss";
-import { Training_Name } from "@/shared";
+import { TrainingName } from "@/shared";
 import { Box, Button, Grid, Link } from "@mui/material";
 import { useDebriefModal } from "../model";
-import { useDebriefData } from "@/feautures/model";
+import { useDebriefData } from "@/features/model";
 
 type Props = {
   debriefs: DebriefDto[];
@@ -38,8 +38,8 @@ export const DebriefList: FC<Props> = ({ debriefs }) => {
               <p className={styles.date}>{debriefing.eventDate}</p>
               <h2>
                 {
-                  Training_Name[
-                    debriefing.eventType as keyof typeof Training_Name
+                  TrainingName[
+                    debriefing.eventType as keyof typeof TrainingName
                   ]
                 }
               </h2>

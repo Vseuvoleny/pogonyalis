@@ -2,7 +2,7 @@
 
 import styles from "./styles.module.scss";
 import { Box, Button, Container } from "@mui/material";
-import { DebriefListContainer } from "@/feautures/debriefList";
+import { DebriefListContainer } from "@/features/debriefList";
 
 export function DebriefingsListPage() {
   return (

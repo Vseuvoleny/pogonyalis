@@ -23,7 +23,7 @@ export function NewDebriefPage() {
   const {
     handleSubmit,
     register,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<DebriefFormValues>({
     defaultValues: {
       eventType: "training",
@@ -31,7 +31,11 @@ export function NewDebriefPage() {
   });
 
   const onSubmit = (data: DebriefFormValues) => {
-    mutation.mutate(data);
+    mutation.mutate(data, {
+      onSuccess: () => {
+        alert("Запрос выполнен успешно");
+      },
+    });
   };
 
   return (

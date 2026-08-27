@@ -9,7 +9,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 
 import { Grid, Link, Skeleton, Typography } from "@mui/material";
-import { Training_Name } from "@/shared";
+import { TrainingName } from "@/shared";
 import { debriefQuery, Description } from "@/entities";
 import { useQuery } from "@tanstack/react-query";
 
@@ -49,8 +49,8 @@ export const Debrief: FC<DebriefProps> = ({ id }: { id: string }) => {
                 <p className={styles.date}>{debrief.eventDate}</p>
                 <h2>
                   {
-                    Training_Name[
-                      debrief.eventType as keyof typeof Training_Name
+                    TrainingName[
+                      debrief.eventType as keyof typeof TrainingName
                     ]
                   }
                 </h2>

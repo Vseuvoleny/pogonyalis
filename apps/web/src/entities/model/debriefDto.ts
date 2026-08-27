@@ -1,7 +1,7 @@
 export type DebriefDto = {
   id: string;
   eventDate: string;
-  eventType: string;
+  eventType: EventType;
   boatClass: string;
   location: string;
   wind: string;
@@ -12,3 +12,9 @@ export type DebriefDto = {
 };
 
 export type DebriefBody = Omit<DebriefDto, "id">;
+
+export enum EventType {
+  TRAINING = "training",
+  RACE = "race",
+  TRAINING_RACE = "training_race",
+}

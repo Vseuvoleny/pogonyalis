@@ -1,5 +1,5 @@
 import { useDeleteDebriefMutation } from "@/entities";
-import { useDebriefData } from "@/feautures/model";
+import { useDebriefData } from "@/features/model";
 import { Box, Button } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { FC } from "react";

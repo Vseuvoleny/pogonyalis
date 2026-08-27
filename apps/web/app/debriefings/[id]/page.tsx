@@ -1,4 +1,4 @@
-import { Debrief } from "@/feautures/debrief/ui/Debrief";
+import { Debrief } from "@/features/debrief/ui/Debrief";
 
 export default async function Page({
   params,

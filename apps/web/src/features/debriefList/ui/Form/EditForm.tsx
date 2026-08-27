@@ -12,7 +12,7 @@ import {
 import React, { FC } from "react";
 import { useForm } from "react-hook-form";
 import styles from "./styles.module.scss";
-import { useDebriefData } from "@/feautures/model";
+import { useDebriefData } from "@/features/model";
 import { DebriefBody, DebriefDto, useUpdateDebriefMutation } from "@/entities";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDebriefModal } from "../../model";
