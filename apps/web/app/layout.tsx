@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { QueryProvider } from "@/app/QueryProvider";
+import { DateProvider } from "@/app/DateProvider";
 import { Header } from "@/widgets/header";
 import { Footer } from "@/widgets/footer";
 
@@ -18,11 +19,13 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <QueryProvider>
-          <div className="layout-wrapper">
-            <Header />
-            <main className="layout-main">{children}</main>
-            <Footer />
-          </div>
+          <DateProvider>
+            <div className="layout-wrapper">
+              <Header />
+              <main className="layout-main">{children}</main>
+              <Footer />
+            </div>
+          </DateProvider>
         </QueryProvider>
       </body>
     </html>
