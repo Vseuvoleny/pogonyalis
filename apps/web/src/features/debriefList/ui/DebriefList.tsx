@@ -1,8 +1,9 @@
-import { DebriefDto, Description } from "@/entities";
+import { DebriefDto, Description, formatWind } from "@/entities";
 import React, { FC } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./styles.module.scss";
 import { TrainingName } from "@/shared";
-import { Box, Button, Grid, Link } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
 import { useDebriefModal } from "../model";
 import { useDebriefData } from "@/features/model";
 
@@ -11,6 +12,7 @@ type Props = {
 };
 
 export const DebriefList: FC<Props> = ({ debriefs }) => {
+  const router = useRouter();
   const openModal = useDebriefModal((state) => state.openModal);
   const setType = useDebriefModal((state) => state.setType);
   const setDebrief = useDebriefData((state) => state.setDebrief);
@@ -32,7 +34,11 @@ export const DebriefList: FC<Props> = ({ debriefs }) => {
   return (
     <>
       {debriefs.map((debriefing) => (
-        <article className={styles.card} key={debriefing.id}>
+        <article
+          className={styles.card}
+          key={debriefing.id}
+          onClick={() => router.push(`/debriefings/${debriefing.id}`)}
+        >
           <div className={styles.cardHeader}>
             <div>
               <p className={styles.date}>{debriefing.eventDate}</p>
@@ -48,7 +54,7 @@ export const DebriefList: FC<Props> = ({ debriefs }) => {
           </div>
           <dl className={styles.conditions}>
             <Grid size={2}>
-              <Description desc={debriefing.wind} title="Ветер" />
+              <Description desc={formatWind(debriefing)} title="Ветер" />
             </Grid>
             <Grid size={2}>
               <Description desc={debriefing.current} title="Течение" />
@@ -58,14 +64,10 @@ export const DebriefList: FC<Props> = ({ debriefs }) => {
             </Grid>
           </dl>
           <Box sx={{ mt: 1 }}>
-            <Button size="small">
-              <Link href={`/debriefings/${debriefing.id}`} underline="none">
-                К записи
-              </Link>
-            </Button>
             <Button
               size="small"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 handlePatchClick(debriefing);
               }}
             >
@@ -73,7 +75,8 @@ export const DebriefList: FC<Props> = ({ debriefs }) => {
             </Button>
             <Button
               size="small"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 handleDeleteClick(debriefing);
               }}
             >
