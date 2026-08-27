@@ -1,12 +1,14 @@
 import { DebriefDto } from "@/entities";
 import { create } from "zustand";
 
-export const useDebriefData = create<{
-  debrief: null | DebriefDto;
+type DebriefDataState = {
+  debrief: DebriefDto | null;
   debriefId: string | null;
-  setDebrief: (payload: DebriefDto) => unknown;
-  clearDebrief: () => unknown;
-}>((set) => ({
+  setDebrief: (payload: DebriefDto) => void;
+  clearDebrief: () => void;
+};
+
+export const useDebriefData = create<DebriefDataState>()((set) => ({
   debrief: null,
   debriefId: null,
   setDebrief: (payload) => set({ debrief: payload, debriefId: payload.id }),
