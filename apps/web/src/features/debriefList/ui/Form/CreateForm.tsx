@@ -11,56 +11,44 @@ import {
 import React, { FC } from "react";
 import { useForm } from "react-hook-form";
 import styles from "./styles.module.scss";
-import { useDebriefData } from "@/features/model";
-import { DebriefBody, DebriefDto, useUpdateDebriefMutation } from "@/entities";
-import { useQueryClient } from "@tanstack/react-query";
-import { useDebriefModal } from "../../model";
+import {
+  DebriefBody,
+  EventType,
+  useCreateDebriefMutation,
+} from "@/entities";
 
 type Props = {
   cancel: () => void;
+  onSuccess?: () => void;
 };
 
-export const EditForm: FC<Props> = ({ cancel }) => {
-  const debrief = useDebriefData((state) => state.debrief as DebriefDto);
-  const debriefId = useDebriefData((state) => state.debriefId as string);
-  const clearDebrief = useDebriefData((state) => state.clearDebrief);
-  const closeModal = useDebriefModal((state) => state.closeModal);
-
-  const mutation = useUpdateDebriefMutation();
-  const queryClient = useQueryClient();
+export const CreateForm: FC<Props> = ({ cancel, onSuccess }) => {
+  const mutation = useCreateDebriefMutation();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<DebriefBody>({
     defaultValues: {
-      eventDate: debrief.eventDate,
-      eventType: debrief.eventType,
-      boatClass: debrief.boatClass,
-      location: debrief.location,
-      wind: debrief.wind,
-      current: debrief.current,
-      competitors: debrief.competitors,
-      comment: debrief.comment,
-      nextSteps: debrief.nextSteps,
+      eventDate: "",
+      eventType: EventType.TRAINING,
+      boatClass: "",
+      location: "",
+      wind: "",
+      current: "",
+      competitors: "",
+      comment: "",
+      nextSteps: "",
     },
   });
 
   const onSubmit = (data: DebriefBody) => {
-    console.log("Submitted data:", data);
-    mutation.mutate(
-      { body: data, id: debriefId },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ["debriefs"],
-          });
-          clearDebrief();
-          closeModal();
-        },
+    mutation.mutate(data, {
+      onSuccess: () => {
+        onSuccess?.();
       },
-    );
+    });
   };
 
   return (
@@ -184,8 +172,13 @@ export const EditForm: FC<Props> = ({ cancel }) => {
           </Grid>
         </Grid>
         <Box sx={{ display: "flex", columnGap: "4px", mt: 2 }}>
-          <Button type="submit" variant="contained" color="primary">
-            Сохранить
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={mutation.isPending}
+          >
+            Сохранить запись
           </Button>
           <Button
             type="button"
