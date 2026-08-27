@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { DebriefModule } from "./debrief/debrief.module";
+import { HealthModule } from "./health/health.module";
 
 @Module({
   imports: [
@@ -14,11 +15,10 @@ import { DebriefModule } from "./debrief/debrief.module";
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: process.env.NODE_ENV !== "production",
     }),
+    HealthModule,
     DebriefModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}

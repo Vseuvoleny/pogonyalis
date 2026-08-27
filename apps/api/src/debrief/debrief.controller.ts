@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   HttpCode,
+  ParseUUIDPipe,
 } from "@nestjs/common";
 import { DebriefService } from "./debrief.service";
 import { CreateDebriefDto } from "./dto/create-debrief.dto";
@@ -29,21 +30,22 @@ export class DebriefController {
   }
 
   @Get(":id")
-  async findOne(@Param("id") id: string) {
+  async findOne(@Param("id", ParseUUIDPipe) id: string) {
     const debrief = await this.debriefService.findOne(id);
     return { data: debrief };
   }
 
   @Patch(":id")
   async update(
-    @Param("id") id: string,
+    @Param("id", ParseUUIDPipe) id: string,
     @Body() updateDebriefDto: UpdateDebriefDto,
   ) {
-    return await this.debriefService.update(id, updateDebriefDto);
+    return this.debriefService.update(id, updateDebriefDto);
   }
 
   @Delete(":id")
-  remove(@Param("id") id: string) {
+  @HttpCode(200)
+  remove(@Param("id", ParseUUIDPipe) id: string) {
     return this.debriefService.remove(id);
   }
 }

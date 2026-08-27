@@ -1,19 +1,23 @@
-import { Injectable } from "@nestjs/common";
-import { CreateDebriefDto } from "./dto/create-debrief.dto";
-import { UpdateDebriefDto } from "./dto/update-debrief.dto";
+import { Injectable, NotFoundException, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { CreateDebriefDto } from "./dto/create-debrief.dto";
+import { UpdateDebriefDto } from "./dto/update-debrief.dto";
 import { Debrief } from "./entities/debrief.entity";
 
 @Injectable()
 export class DebriefService {
+  private readonly logger = new Logger(DebriefService.name);
+
   constructor(
-    @InjectRepository(Debrief) private debriefRepository: Repository<Debrief>,
+    @InjectRepository(Debrief)
+    private readonly debriefRepository: Repository<Debrief>,
   ) {}
 
   create(createDebriefDto: CreateDebriefDto) {
-    const debrief = this.debriefRepository.save(createDebriefDto);
-    return debrief;
+    this.logger.log("Creating debrief");
+    const debrief = this.debriefRepository.create(createDebriefDto);
+    return this.debriefRepository.save(debrief);
   }
 
   findAll() {
@@ -21,32 +25,22 @@ export class DebriefService {
   }
 
   async findOne(id: string) {
-    const currentDebrief = await this.debriefRepository.findOneBy({ id });
-    if (!currentDebrief) {
-      throw new Error(`Не найдена сущность с ID:${id}`);
+    const debrief = await this.debriefRepository.findOneBy({ id });
+    if (!debrief) {
+      throw new NotFoundException(`Debrief with ID "${id}" not found`);
     }
-
-    return currentDebrief;
+    return debrief;
   }
 
   async update(id: string, updateDebriefDto: UpdateDebriefDto) {
-    const currentDebrief = await this.debriefRepository.findOneBy({ id });
-    if (!currentDebrief) {
-      throw new Error(`Не найдена сущность с ID:${id}`);
-    }
-    const newBody: CreateDebriefDto = {
-      ...currentDebrief,
-      ...updateDebriefDto,
-    };
-    await this.debriefRepository.update({ id }, newBody);
+    const debrief = await this.findOne(id);
+    Object.assign(debrief, updateDebriefDto);
+    return this.debriefRepository.save(debrief);
   }
 
-  remove(id: string) {
-    const currentDebrief = this.debriefRepository.findOneBy({ id });
-    if (!currentDebrief) {
-      throw new Error(`Не найдена сущность с ID:${id}`);
-    }
-    const result = this.debriefRepository.delete({ id });
-    return result;
+  async remove(id: string) {
+    const debrief = await this.findOne(id);
+    await this.debriefRepository.remove(debrief);
+    return { deleted: true };
   }
 }
