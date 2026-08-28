@@ -39,6 +39,14 @@ export class CreateDebriefDto {
   @IsOptional()
   windGusts!: number | null;
 
+  @IsIn(["С", "СВ", "В", "ЮВ", "Ю", "ЮЗ", "З", "СЗ"])
+  @IsOptional()
+  windDirection!: string | null;
+
+  @IsString()
+  @IsOptional()
+  windComment!: string | null;
+
   @IsString()
   @IsOptional()
   current!: string;

@@ -35,6 +35,12 @@ export class Debrief {
   @Column({ type: "int", nullable: true })
   windGusts!: number | null;
 
+  @Column({ type: "varchar", length: 2, nullable: true })
+  windDirection!: string | null;
+
+  @Column({ type: "text", nullable: true })
+  windComment!: string | null;
+
   @Column({ nullable: true })
   current!: string;
 
