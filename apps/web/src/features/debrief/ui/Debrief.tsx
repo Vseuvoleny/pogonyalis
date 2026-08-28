@@ -64,6 +64,13 @@ export const Debrief: FC<DebriefProps> = ({ id }: { id: string }) => {
               <Description desc={debrief.current} title="Течение" />
               <Description desc={debrief.competitors} title="Соперники" />
             </dl>
+            {debrief.windComment ? (
+              <Box sx={{ mt: 2, p: 1.5, bgcolor: "#f5f7f4", borderRadius: 1 }}>
+                <Typography variant="body2" color="textSecondary" sx={{ whiteSpace: "pre-line" }}>
+                  {debrief.windComment}
+                </Typography>
+              </Box>
+            ) : null}
             <Box sx={{ pt: 2 }}>
               <Grid container spacing={2} columns={8}>
                 <Grid size={4}>

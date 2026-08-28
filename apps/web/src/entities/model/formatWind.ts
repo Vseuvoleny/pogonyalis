@@ -5,11 +5,15 @@ const UNIT_LABEL: Record<string, string> = {
   knots: "уз",
 };
 
-export function formatWind(debrief: Pick<DebriefDto, "windFrom" | "windTo" | "windUnit" | "windGusts">): string {
-  const { windFrom, windTo, windUnit, windGusts } = debrief;
+export function formatWind(debrief: Pick<DebriefDto, "windFrom" | "windTo" | "windUnit" | "windGusts" | "windDirection">): string {
+  const { windFrom, windTo, windUnit, windGusts, windDirection } = debrief;
   const unit = windUnit ? UNIT_LABEL[windUnit] ?? windUnit : "";
 
   const parts: string[] = [];
+
+  if (windDirection) {
+    parts.push(windDirection);
+  }
 
   if (windFrom != null && windTo != null) {
     parts.push(`${windFrom}–${windTo} ${unit}`);

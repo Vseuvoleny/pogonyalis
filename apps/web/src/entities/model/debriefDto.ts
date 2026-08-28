@@ -8,6 +8,8 @@ export type DebriefDto = {
   windTo: number | null;
   windUnit: "ms" | "knots" | null;
   windGusts: number | null;
+  windDirection: string | null;
+  windComment: string | null;
   current: string;
   competitors: string;
   comment: string;

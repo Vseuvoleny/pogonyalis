@@ -17,6 +17,8 @@ export const debriefFormSchema = z
     windTo: z.number().min(0).nullable(),
     windUnit: z.enum(["ms", "knots"]).nullable(),
     windGusts: z.number().min(0).nullable(),
+    windDirection: z.enum(["С", "СВ", "В", "ЮВ", "Ю", "ЮЗ", "З", "СЗ"]).nullable(),
+    windComment: z.string(),
     current: z.string(),
     competitors: z.string(),
     comment: z.string().min(1, "Добавь комментарий о событии"),

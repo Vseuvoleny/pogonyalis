@@ -63,6 +63,9 @@ export const DebriefList: FC<Props> = ({ debriefs }) => {
               <Description desc={debriefing.location} title="Локация" />
             </Grid>
           </dl>
+          {debriefing.windComment ? (
+            <p className={styles.windComment}>{debriefing.windComment}</p>
+          ) : null}
           <Box sx={{ mt: 1 }}>
             <Button
               size="small"

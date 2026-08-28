@@ -59,6 +59,16 @@
   line-height: 1.45;
 }
 
+.windComment {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #f5f7f4;
+  color: #47524f;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
 @media (max-width: 720px) {
   .cardHeader {
     align-items: flex-start;
