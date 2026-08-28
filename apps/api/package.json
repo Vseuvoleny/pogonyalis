@@ -7,6 +7,9 @@
     "start:dev": "nest start --watch",
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/main.js",
+    "migration:generate": "typeorm migration:generate -d src/data-source.ts src/migrations/MigrationName",
+    "migration:run": "typeorm migration:run -d src/data-source.ts",
+    "migration:revert": "typeorm migration:revert -d src/data-source.ts",
     "lint": "echo \"No lint configured\""
   },
   "dependencies": {
