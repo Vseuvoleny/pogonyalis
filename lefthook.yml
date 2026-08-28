@@ -1,0 +1,8 @@
+pre-commit:
+  commands:
+    eslint:
+      glob: "*.{ts,tsx}"
+      run: npx eslint --fix {staged_files}
+      stage_fixed: true
+    typecheck:
+      run: npx tsc --noEmit --project apps/web/tsconfig.json && npx tsc --noEmit --project apps/api/tsconfig.json
