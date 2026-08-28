@@ -25,7 +25,7 @@ import { debriefFormSchema, DebriefFormValues } from "../../model";
 
 const handleNumericChange = (
   e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  onChange: (...args: any[]) => void,
+  onChange: (value: number | null) => void,
 ) => {
   const cleaned = e.target.value.replace(/[^0-9]/g, "");
   onChange(cleaned === "" ? null : Number(cleaned));
