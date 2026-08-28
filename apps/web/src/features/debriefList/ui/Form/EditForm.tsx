@@ -23,6 +23,14 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useDebriefModal } from "../../model";
 import { debriefFormSchema, DebriefFormValues } from "../../model";
 
+const handleNumericChange = (
+  e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  onChange: (...args: any[]) => void,
+) => {
+  const cleaned = e.target.value.replace(/[^0-9]/g, "");
+  onChange(cleaned === "" ? null : Number(cleaned));
+};
+
 type Props = {
   cancel: () => void;
 };
@@ -50,8 +58,11 @@ export const EditForm: FC<Props> = ({ cancel }) => {
       location: debrief.location,
       windFrom: debrief.windFrom,
       windTo: debrief.windTo,
-      windUnit: debrief.windUnit,
+      windUnit: debrief.windUnit ?? "ms",
       windGusts: debrief.windGusts,
+      windDirection:
+        debrief.windDirection as DebriefFormValues["windDirection"],
+      windComment: debrief.windComment ?? "",
       current: debrief.current,
       competitors: debrief.competitors,
       comment: debrief.comment,
@@ -105,7 +116,9 @@ export const EditForm: FC<Props> = ({ cancel }) => {
             </Grid>
             <Grid size={4}>
               <FormControl className={styles.field} fullWidth size="small">
-                <InputLabel>Тип события</InputLabel>
+                <InputLabel sx={{ background: "white", p: "0 4px" }}>
+                  Тип
+                </InputLabel>
                 <Select {...register("eventType")}>
                   <MenuItem value="training">Тренировка</MenuItem>
                   <MenuItem value="training_race">Тренировочная гонка</MenuItem>
@@ -142,21 +155,33 @@ export const EditForm: FC<Props> = ({ cancel }) => {
               <label className={styles.field}>
                 <span>Ветер (м/с)</span>
                 <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                  <TextField
-                    label="От"
-                    type="number"
-                    size="small"
-                    sx={{ flex: 1 }}
-                    {...register("windFrom", { valueAsNumber: true })}
+                  <Controller
+                    name="windFrom"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        label="От"
+                        size="small"
+                        sx={{ flex: 1 }}
+                        value={field.value ?? ""}
+                        onChange={(e) => handleNumericChange(e, field.onChange)}
+                      />
+                    )}
                   />
-                  <TextField
-                    label="До"
-                    type="number"
-                    size="small"
-                    sx={{ flex: 1 }}
-                    error={!!errors.windTo}
-                    helperText={errors.windTo?.message}
-                    {...register("windTo", { valueAsNumber: true })}
+                  <Controller
+                    name="windTo"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <TextField
+                        label="До"
+                        size="small"
+                        sx={{ flex: 1 }}
+                        value={field.value ?? ""}
+                        onChange={(e) => handleNumericChange(e, field.onChange)}
+                        error={!!fieldState.error}
+                        helperText={fieldState.error?.message}
+                      />
+                    )}
                   />
                 </Box>
                 <Controller
@@ -177,13 +202,41 @@ export const EditForm: FC<Props> = ({ cancel }) => {
                     </RadioGroup>
                   )}
                 />
+                <Controller
+                  name="windGusts"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      label="Порывы"
+                      size="small"
+                      value={field.value ?? ""}
+                      onChange={(e) => handleNumericChange(e, field.onChange)}
+                      error={!!fieldState.error}
+                      helperText={fieldState.error?.message}
+                    />
+                  )}
+                />
+                <FormControl fullWidth size="small">
+                  <InputLabel sx={{ background: "white", p: "0 4px" }}>
+                    Направление ветра
+                  </InputLabel>
+                  <Select {...register("windDirection")}>
+                    <MenuItem value="С">С (Север)</MenuItem>
+                    <MenuItem value="СВ">СВ (Северо-Восток)</MenuItem>
+                    <MenuItem value="В">В (Восток)</MenuItem>
+                    <MenuItem value="ЮВ">ЮВ (Юго-Восток)</MenuItem>
+                    <MenuItem value="Ю">Ю (Юг)</MenuItem>
+                    <MenuItem value="ЮЗ">ЮЗ (Юго-Запад)</MenuItem>
+                    <MenuItem value="З">З (Запад)</MenuItem>
+                    <MenuItem value="СЗ">СЗ (Северо-Запад)</MenuItem>
+                  </Select>
+                </FormControl>
                 <TextField
-                  label="Порывы"
-                  type="number"
-                  size="small"
-                  error={!!errors.windGusts}
-                  helperText={errors.windGusts?.message}
-                  {...register("windGusts", { valueAsNumber: true })}
+                  label="Комментарий к ветру"
+                  placeholder="Изменения ветра в течение дня, зоны, поведение"
+                  multiline
+                  rows={2}
+                  {...register("windComment")}
                 />
               </label>
             </Grid>
